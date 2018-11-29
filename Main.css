@@ -1,0 +1,77 @@
+
+body {
+    background-color: #E3E3F5;
+}
+
+#header {
+    
+    margin: -10px auto 5px;
+    height: 5em;
+    display: flex;
+    
+}
+
+.header-content{
+    background-color: aqua;
+    flex: 2;
+    display: flex;
+    border: solid #F3F3F3 2px;
+    border-radius: 0px 0px 50px 50px;
+}
+
+.header-content:hover {
+    background-color: white;
+}
+
+.header-content:hover .header-text {
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.header-text{
+    margin: auto;
+    user-select: none;
+    color: aliceblue;
+    font-size: 2.5em;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+#login {
+    flex: 1;
+    background-color: aquamarine;
+}
+
+#login:hover {
+    background-color: white;
+}
+
+
+
+#body-content {
+    border-radius: 10px;
+    background-color: white;
+    margin: 1em 5em;
+    padding: 2em;
+    height: 100%;
+}
+
+table {
+    border-collapse: separate;
+    border: solid black 1px;
+    border-radius: 6px;
+    -moz-border-radius:6px;
+}
+
+th, td {
+    padding: 5px;
+    border-left: solid black 1px;
+    border-top: solid black 1px;
+}
+
+th {
+    background-color: #CCC;
+    border-top: none;
+}
+
+td:first-child, th:first-child {
+    border-left: none;
+}
