@@ -1,2 +1,2 @@
 # OrderSystem
-Order System and MySQL databse with php client side
+Order System and MySQL database with php client side

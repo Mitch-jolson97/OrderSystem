@@ -20,7 +20,13 @@
 
     <body>
         <?php
-            include 'NavBar.html';
+        $userId ="";
+        $conn = oci_connect('sizheng', 'Dec371996', '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(Host=db2.ndsu.edu)(Port=1521)))(CONNECT_DATA=(SID=cs)))');
+
+        include 'NavBar.html';
+            if($_SERVER['QUERY_STRING'] == "action=remove&code")
+
+
         ?>
 
         <div id="body-content">
@@ -54,7 +60,13 @@
 
                 <div style='flex: 3;'>
                     <table>
-                        <tr><th>NAME</th><th>PRICE</th><th>CATEGORY</th><th>NUMBER OF ITEM</th></tr>
+                        <tr>
+                            <th>NAME</th>
+                            <th>PRICE</th>
+                            <th>CATEGORY</th>
+                            <th>NUMBER OF ITEM</th>
+                            <th style="text-align:center;" width="5%">Remove</th>
+                        </tr>
                         
                         <?php
                             while($row = oci_fetch_array($stid, OCI_ASSOC))
@@ -79,6 +91,9 @@
                                         $hasItems = true;
                                     }
                                 }
+                                    echo "<td style=\"text-align:center;\">";
+                                        echo "<a href=\"Cart.php?action=remove&code\" class=\"btnRemoveAction\"><img src=\"icon-delete.png\" alt=\"Remove Item\" /></a>";
+                                    echo "</td>";
                                 echo "</tr>";
                             }
                             
