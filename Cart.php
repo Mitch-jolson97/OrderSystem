@@ -34,7 +34,7 @@
 
                     $conn = oci_connect('sizheng', 'Dec371996', '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(Host=db2.ndsu.edu)(Port=1521)))(CONNECT_DATA=(SID=cs)))');
 
-                    $cartQuery = "SELECT co.ID FROM USER_T u INNER JOIN CART_ORDER co ON u.USERNAME = '$username' AND co.COMPLETED = 0";
+                    $cartQuery = "SELECT co.ID FROM USER_T u INNER JOIN CART_ORDER co ON u.USERNAME = '$username' AND u.ID = co.USER_ID AND co.COMPLETED = 0";
                     $stid = oci_parse($conn, $cartQuery);
 
                     oci_define_by_name($stid, 'ID', $cartId);
@@ -107,7 +107,36 @@
                                 <option value="30">30 Days</option>
                                 <option value="45">45 Days</option>
                             </select>
+                            <br/><br/>
+                            <h4>Shipping Address</h4>
+                            <div style="display: flex; flex-direction: column;">
+                                <?php 
+                                    $addressQuery = "SELECT sa.ID, sa.FIRST_NAME, sa.LAST_NAME, sa.STREET, sa.CITY, sa.STATE, sa.ZIP FROM USER_T u INNER JOIN SHIP_ADDRESS sa ON u.USERNAME = '$username' AND u.ID = sa.USER_ID";
+                                    $stid = oci_parse($conn, $addressQuery);
+                                    oci_execute($stid, OCI_DEFAULT);
+
+                                    while($row = oci_fetch_array($stid, OCI_ASSOC)) {
+                                        $shipId = $row['ID'];
+                                        $shipName = $row['FIRST_NAME']." ".$row['LAST_NAME'];
+                                        $shipStreet = $row['STREET'];
+                                        $shipCity = $row['CITY'];
+                                        $shipState = $row['STATE'];
+                                        $shipZip = $row['ZIP'];
+                                        
+                                        $formattedAddress = "<div style='flex: 4;'>$shipName<br/>$shipStreet<br/>$shipCity, $shipState $shipZip</div>";
+
+                                        echo "<div style='display: flex; flex: 1; margin-bottom: 10px;'>";
+                                        
+                                            echo "<input type='radio' name='address' value='$shipId' required='required' style='flex: 1; margin: auto 0;'> $formattedAddress <br/>";
+                                        
+                                        echo "</div>";
+                                    }
+                                
+                                    oci_free_statement($stid);
+                                ?>
+                            </div>
                         </form>
+                        <a href="newaddress.php">Add New Shipping Address</a>
                     </div>
                 </div>
 
@@ -116,9 +145,10 @@
 
                         $reoccuring = $_POST["reoccuring"];
                         $dayAmount = $_POST["dayAmount"];
+                        $addressId = $_POST["address"];
                         
                         
-                        $updateQuery = "UPDATE CART_ORDER SET TOTAL_COST = $totalCost, TOTAL_NUMBER = $totalItems, COMPLETED = 1 WHERE ID = $cartId";
+                        $updateQuery = "UPDATE CART_ORDER SET TOTAL_COST = $totalCost, TOTAL_NUMBER = $totalItems, ADDRESS_ID = $addressId, COMPLETED = 1 WHERE ID = $cartId";
                         $stid = oci_parse($conn, $updateQuery);
                         oci_execute($stid, OCI_DEFAULT);
                         oci_free_statement($stid);
