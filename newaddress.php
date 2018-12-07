@@ -1,6 +1,9 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+     <?php
+         require 'verification.php';
+ ?>
     <style>
         .error {color: #FF0000;}
         #center-login {
@@ -105,12 +108,12 @@
             oci_execute($stid2,OCI_DEFAULT);
             //iterate through each row
             //while ($row = oci_fetch_array($stid,OCI_ASSOC))
-            echo "<h4>Successfully created a new shipping address, $name!</h4>";
+            oci_fetch($stid2);
             oci_free_statement($stid2);
             oci_commit($conn);
+            echo "<h4>Successfully created a new shipping address, $name!</h4>";
 
 
-            oci_free_statement($stid);
             oci_close($conn);
             }
             }
