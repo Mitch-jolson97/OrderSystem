@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <?php 
+        <?php
             require 'verification.php';
         ?>
         <link rel="stylesheet" type="text/css" href="Main.css" >
     </head>
-    
+
     <body>
-        <?php 
+        <?php
             //Adds NavBar to top of page
             include 'NavBar.html';
         ?>
-        
+
         <div id="body-content">
 
             <?php
@@ -24,22 +24,22 @@
                 $cartArray = [];
                 //Username saved to session data
                 $username = $_SESSION['username'];
-            
+
                 //Open connection to database
                 $conn = oci_connect('sizheng', 'Dec371996', '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(Host=db2.ndsu.edu)(Port=1521)))(CONNECT_DATA=(SID=cs)))');
-                
+
                 //Query database for Cart_Order associated to username
-                $cartQuery = "SELECT co.ID, co.TOTAL_COST, co.TOTAL_NUMBER FROM USER_T u INNER JOIN CART_ORDER co ON u.USERNAME = '$username' AND co.COMPLETED = 1";
+                $cartQuery = "SELECT co.ID, co.TOTAL_COST, co.TOTAL_NUMBER FROM USER_T u INNER JOIN CART_ORDER co ON u.USERNAME = '$username' AND u.ID = co.USER_ID AND co.COMPLETED = 1";
                 $stid = oci_parse($conn, $cartQuery);
-                
+
                 //Tells query handler to put Cart_Order values inside the variables
                 oci_define_by_name($stid, 'ID', $cartId);
                 oci_define_by_name($stid, 'TOTAL_COST', $cartCost);
                 oci_define_by_name($stid, 'TOTAL_NUMBER', $cartNumber);
-                
+
                 //Execute Cart_Order query
                 oci_execute($stid,OCI_DEFAULT);
-                
+
                 //Loop through returned query data and puts it as an array inside the cartArray
                 while($row = oci_fetch_array($stid, OCI_ASSOC))
                 {
@@ -47,13 +47,13 @@
                 }
                 //Release the query
                 oci_free_statement($stid);
-                
+
                 //Loop through each array of Cart_Order data
                 foreach($cartArray as $cartRow) {
-                    
+
                     //Make container for Cart_Order data and Cart_Item table
                     echo "<div style='display:flex;'>";
-                    
+
                         //Display Cart_Order data inside left box
                         echo "<div style='flex: 1; border: solid black 1px; border-radius: 10px; padding: 10px; height: 90px; margin-right: 10px; background-color: #EFEFFF;'>";
                             echo "<br/><div style='float: left;'><b>ORDER ID:</b></div> <div style='float: right;'>$cartRow[0]</div><br/>";
@@ -67,7 +67,7 @@
 
                         //Execute Item/Cart_Item data query
                         oci_execute($stid,OCI_DEFAULT);
-                        
+
                         //Display Item data inside right box
                         echo "<div style='flex: 4;'>";
                             //Make a table for the item data
@@ -78,9 +78,9 @@
                                 {
                                     $count = 0;
                                     echo "<tr>";
-                                    
+
                                     //Loop through each column inside the row of data
-                                    foreach ($row as $item)    
+                                    foreach ($row as $item)
                                     {
                                         //Check which column it is to change display
                                         if($count == 1) {
@@ -97,22 +97,21 @@
                                 }
                             echo "</table>";
                         echo "</div>";
-                    
+
                     //Close container for Cart_Order data and Cart_Item table
                     echo "</div><br/><br/>";
-                    
+
                     //Free up query statement
                     oci_free_statement($stid);
                 }
                 //Close database connection
                 oci_close($conn);
-            
+
                 //Reference for alert output javascript using PHP
                 //echo "<script type='text/javascript'>alert('$query');</script>";
             ?>
-            
+
         </div>
-        
+
     </body>
 </html>
-

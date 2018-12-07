@@ -71,10 +71,10 @@
             oci_define_by_name($stid, 'PASSWORD', $password);
 
             oci_execute($stid,OCI_DEFAULT);
-
+            oci_fetch($stid);
             //iterate through each row
             //while ($row = oci_fetch_array($stid,OCI_ASSOC))
-            while(oci_fetch($stid))
+            if(!empty($password))
             {
                 //iterate through each item in the row and echo it
                 if($password == $pass){
@@ -86,9 +86,13 @@
                         $_SESSION['username'] = $name;
                         $_SESSION['loggedin'] = true;
                     //}
+                  }else {
+                    $passErr = "Wrong password! try again ";
                   }
 
               echo '<br/>';
+            }else {
+              $nameErr =  " Given username is not in database, try again or go registration";
             }
             oci_free_statement($stid);
             oci_close($conn);
