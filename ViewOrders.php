@@ -29,7 +29,7 @@
                 $conn = oci_connect('sizheng', 'Dec371996', '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(Host=db2.ndsu.edu)(Port=1521)))(CONNECT_DATA=(SID=cs)))');
                 
                 //Query database for Cart_Order associated to username
-                $cartQuery = "SELECT co.ID, co.TOTAL_COST, co.TOTAL_NUMBER FROM USER_T u INNER JOIN CART_ORDER co ON u.USERNAME = '$username' AND co.COMPLETED = 1";
+                $cartQuery = "SELECT co.ID, co.TOTAL_COST, co.TOTAL_NUMBER FROM USER_T u INNER JOIN CART_ORDER co ON u.USERNAME = '$username' AND u.ID = co.USER_ID AND co.COMPLETED = 1 ORDER BY co.ID DESC";
                 $stid = oci_parse($conn, $cartQuery);
                 
                 //Tells query handler to put Cart_Order values inside the variables
