@@ -155,7 +155,7 @@
                     <div class="form-element">
                         <label for="zip">Zipcode: </label>
                         <input id="zip" type="number" name="zip" value="<?php echo $zip;?>">
-                        <span class="error"> <?php echo $zip;?></span>
+                        <span class="error"> <?php echo $zipErr;?></span>
                     </div>
                     <div class="form-element">
                         <input id="submit" type="submit" name="submit" value="Submit" style="height: 30px;">
