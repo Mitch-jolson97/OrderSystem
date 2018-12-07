@@ -55,9 +55,6 @@
                 oci_free_statement($stid);
             
                 //echo "User ID: $userId <br/>";
-            
-            
-                /* NEED QUERY TO GET SHIP_ADDRESS OF USER_T HERE */
                 
                 
                 $cartQuery = "SELECT co.ID FROM CART_ORDER co WHERE co.USER_ID = '$userId' AND co.COMPLETED = 0";
@@ -70,7 +67,7 @@
                 
 
                 if(empty($cartId)) {
-                    $insertQuery = "INSERT INTO CART_ORDER VALUES(NULL, 1, $userId, NULL, NULL, 0)";
+                    $insertQuery = "INSERT INTO CART_ORDER VALUES(NULL, NULL, $userId, NULL, NULL, 0)";
                     $stid = oci_parse($conn, $insertQuery);
                     oci_execute($stid);
                     oci_free_statement($stid);
