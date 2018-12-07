@@ -39,64 +39,55 @@
 
         <?php
             // define variables and set to empty values
-            session_start();
+            //session_start();
+
             $nameErr = $passErr = "";
             $name = $pass = $comment = $password = "";
-            $userId = 0;
-
+            //$userId = 0;
+           $checkerr = 0;
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (empty($_POST["name"])) {
                     $nameErr = "Name is required";
+                    $checkerr =1;
                 } else {
                     $name = test_input($_POST["name"]);
                 // check if name only contains letters and whitespace
                 if (!preg_match("/^[a-zA-Z ]*$/",$name)) {
                     $nameErr = "Only letters and white space allowed";
+                    $checkerr =1;
                 }
             }
 
             if (empty($_POST["pass"])) {
-                $passErr = " password is required";
+                $passErr = "password is required";
+                $checkerr =1;
             } else {
                 $pass = test_input($_POST["pass"]);
             }
-
-            // Remember to replace 'username' and 'password'!
+           if($checkerr == 0){//check is there an error or not, if no error then connect database
             $conn = oci_connect('sizheng', 'Dec371996', '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(Host=db2.ndsu.edu)(Port=1521)))(CONNECT_DATA=(SID=cs)))');
 
-            //put your query here
+            //first do query for check the same user name in database
             $query = "SELECT * FROM USER_T where USERNAME = '$name'";
             $stid = oci_parse($conn,$query);
-
-            oci_define_by_name($stid, 'PASSWORD', $password);
-
             oci_execute($stid,OCI_DEFAULT);
-            oci_fetch($stid);
+            //oci_define_by_name($stid, 'PASSWORD', $password);
+            if(!($row = oci_fetch_array($stid,OCI_ASSOC)))//if no same name in database then insert
+            {
+            $query2 = "INSERT INTO USER_T Values(NULL,$name,$pass);";
+            $stid2 = oci_parse($conn,$query2);
+            oci_execute($stid2,OCI_DEFAULT);
             //iterate through each row
             //while ($row = oci_fetch_array($stid,OCI_ASSOC))
-            if(!empty($password))
-            {
-                //iterate through each item in the row and echo it
-                if($password == $pass){
-                    //foreach ($row as $item)
-                    //{
-
-                        echo "<h4>Welcome $name!</h4>";
-
-                        $_SESSION['username'] = $name;
-                        $_SESSION['loggedin'] = true;
-                    //}
-                  }else {
-                    $passErr = "Wrong password! try again ";
-                  }
-
-              echo '<br/>';
-            }else {
-              $nameErr =  " Given username is not in database, try again or go registration";
+            echo "<h4>Register seccess $name!</h4>";
+            oci_free_statement($stid2);
+            }else { // The username is not available
+            $nameErr = "That username has already been registered.";
             }
+
             oci_free_statement($stid);
             oci_close($conn);
-
+            }
             }
 
             function test_input($data) {
@@ -108,7 +99,7 @@
         ?>
         <div id="body-content">
             <div id="center-login">
-                <h2>Login</h2>
+                <h2>Register</h2>
 
                 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                     <div class="form-element">
@@ -125,10 +116,7 @@
                         <input id="submit" type="submit" name="submit" value="Submit" style="height: 30px;">
                     </div>
                 </form>
-                <div style="text-align: center;">
-                  <a href="Logout.php" style="margin-right: 10px;">Log Out</a>
-                  <a href="register.php">Register</a>
-                </div>
+                <a href="login1.php">log in</a>
             </div>
     </div>
 </body>
