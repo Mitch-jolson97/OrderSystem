@@ -149,8 +149,8 @@
                     </div>
                     <div class="form-element">
                         <label for="state">State: </label>
-                        <input id="city" type="text" name="city" value="<?php echo $city;?>">
-                        <span class="error"> <?php echo $cityErr;?></span>
+                        <input id="state" type="text" name="state" value="<?php echo $state;?>">
+                        <span class="error"> <?php echo $stateErr;?></span>
                     </div>
                     <div class="form-element">
                         <label for="zip">Zipcode: </label>
