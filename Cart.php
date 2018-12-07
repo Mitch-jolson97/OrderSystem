@@ -30,6 +30,7 @@
                     $username = $_SESSION['username'];
                     $totalCost = 0;
                     $totalItems = 0;
+                    $hasItems = false;
 
                     $conn = oci_connect('sizheng', 'Dec371996', '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(Host=db2.ndsu.edu)(Port=1521)))(CONNECT_DATA=(SID=cs)))');
 
@@ -73,6 +74,10 @@
                                     }
                                     echo $item."</td>";
                                     $count += 1;
+                                    
+                                    if(!empty($item)) {
+                                        $hasItems = true;
+                                    }
                                 }
                                 echo "</tr>";
                             }
@@ -107,7 +112,7 @@
                 </div>
 
                 <?php
-                    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    if ($_SERVER["REQUEST_METHOD"] == "POST" && $hasItems) {
 
                         $reoccuring = $_POST["reoccuring"];
                         $dayAmount = $_POST["dayAmount"];
