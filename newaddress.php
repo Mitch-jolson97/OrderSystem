@@ -126,7 +126,7 @@
         ?>
         <div id="body-content">
             <div id="center-login">
-                <h2>Register</h2>
+                <h2>New Shipping Address</h2>
 
                 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                     <div class="form-element">

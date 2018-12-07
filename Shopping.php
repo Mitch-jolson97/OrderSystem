@@ -37,11 +37,14 @@
         ?>
         
         <div id="body-content">
+            <form method="post" action="Shopping.php">
+                <input type="text" name="search">
+                <button type="submit">Search</button>
+            </form>
             <?php 
                 $cartId = "";
                 $userId = "";
                 $shipId = "";
-                $itemIdArray = [];
                 $username = $_SESSION['username'];
             
                 $conn = oci_connect('sizheng', 'Dec371996', '(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(Host=db2.ndsu.edu)(Port=1521)))(CONNECT_DATA=(SID=cs)))');
@@ -83,15 +86,20 @@
                 }
                 
                 //echo "Cart ID: $cartId <br/><br/>";
+            
+                if($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['search'])) {
+                    $search = strtolower($_POST['search']);
+                    $allItemQuery = "SELECT * FROM ITEM WHERE lower(NAME) LIKE '%$search%'";
+                    $stid = oci_parse($conn, $allItemQuery);
+                    oci_execute($stid, OCI_DEFAULT);
+                } else {
+                    $allItemQuery = "SELECT * FROM ITEM";
+                    $stid = oci_parse($conn, $allItemQuery);
+                    oci_execute($stid, OCI_DEFAULT);
+                }
                 
-                $allItemQuery = "SELECT * FROM ITEM";
-                $stid = oci_parse($conn, $allItemQuery);
-                oci_execute($stid, OCI_DEFAULT);
-                
-                
-                $count = 0;
                 while($row = oci_fetch_array($stid, OCI_ASSOC)){
-                    array_push($itemIdArray, $row['ID']);
+                    $itemId = $row['ID'];
                     echo "<div class='itemBox'>";
                         echo "<div class='itemInfo'>";
                             echo "<div class='itemInfoVal' id='itemId'>";
@@ -117,23 +125,22 @@
                                     echo "<option value='4'>4</option>";
                                     echo "<option value='5'>5</option>";
                                 echo "</select>";
-
-                                echo "<button type='submit' name='submit' id='submit' value='$count'>Add</button>";
+                                
+                                echo "<button type='submit' name='submit' id='submit' value='$itemId'>Add</button>";
                             echo "</form>";
                         echo "</div>";
                     echo "</div>";
-                    $count += 1;
                 }
                 
             
                 oci_free_statement($stid);
             
             
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["submit"])) {
                     
                     $item = $_POST["submit"];
                     $amount = $_POST["amount"];
-                    $insertQuery = "INSERT INTO CART_ITEM VALUES(NULL, $cartId, $itemIdArray[$item], $amount)";
+                    $insertQuery = "INSERT INTO CART_ITEM VALUES(NULL, $cartId, $item, $amount)";
                     $stid = oci_parse($conn, $insertQuery);
                     oci_execute($stid);
                     oci_free_statement($stid);
