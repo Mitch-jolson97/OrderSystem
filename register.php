@@ -74,13 +74,14 @@
             //oci_define_by_name($stid, 'PASSWORD', $password);
             if(!($row = oci_fetch_array($stid,OCI_ASSOC)))//if no same name in database then insert
             {
-            $query2 = "INSERT INTO USER_T Values(NULL,$name,$pass);";
+            $query2 = "INSERT INTO USER_T Values(NULL,'$name','$pass')";
             $stid2 = oci_parse($conn,$query2);
             oci_execute($stid2,OCI_DEFAULT);
             //iterate through each row
             //while ($row = oci_fetch_array($stid,OCI_ASSOC))
-            echo "<h4>Register seccess $name!</h4>";
+            echo "<h4>Successfully registered, $name!</h4>";
             oci_free_statement($stid2);
+            oci_commit($conn);
             }else { // The username is not available
             $nameErr = "That username has already been registered.";
             }
